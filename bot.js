@@ -4,6 +4,7 @@ const config = require("./config.json");
 const fs = require("fs");
 const sql = require("sqlite");
 sql.open("./omikuji.sqlite");
+var async = require('async');
 
 client.on('ready', () => {
   client.user.setGame('Make a wish!');
@@ -65,10 +66,7 @@ client.on('message', msg => {
 	var intStick = Math.floor(Math.random() * 203) + 1;
     msg.channel.send('A stick comes out. It says no.' + intStick);
     msg.channel.send('Your fortune reads:');
-    sql.get(`SELECT * FROM omikuji WHERE no =${intStick}`).then(row => {
-      msg.channel.send(`${row.message}`);
-    });
-	 msg.channel.send('Are you pleased '+ msg.author + ' sama?\nIf not, press `m!shake` again. If yes, press `m!yes`');
+          getOmikuji(msg,intStick);
   }
   if (msg.content === config.prefix  + '!' +'yes') {
     msg.channel.send('It is my honor to serve you. Please try our services again.');
@@ -112,5 +110,15 @@ client.on('message', msg => {
     msg.channel.send('Please take your leave slowly. I wish you a safe journey!');
   }
 });
+async function getOmikuji(msg,intStick){
+    await sql.get(`SELECT * FROM omikuji WHERE no =${intStick}`).then(row => {
+      msg.channel.send(`${row.message}`);
+    });
+    await askIfPleased(msg);
+}
+
+async function askIfPleased(msg) {
+  msg.channel.send('Are you pleased '+ msg.author + ' sama?\nIf not, press `m!shake` again. If yes, press `m!yes`');
+}
 
 client.login(config.token);
