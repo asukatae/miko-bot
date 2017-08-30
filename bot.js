@@ -12,8 +12,7 @@ client.on('ready', () => {
 })
 
 client.on('message', msg => {
-  client.user.setGame('Make a wish!');
-
+  
   if (msg.isMentioned(client.user)) {
     msg.reply('Youkoso, are you here to make a wish? Or to enjoy the festival?');
     msg.channel.send('*It is the hour of the twilight, the tasogare-doki.*\nPlease choose your service: 1) `m!pray` 2) `m!ema` 3) `m!omamori` 4) `m!omikuji` 5) `m!shikigami` 6) `m!onsen` 7) `m!festival` 8) `m!help` 9) `m!exit`');
@@ -63,10 +62,7 @@ client.on('message', msg => {
     msg.channel.send('Shake the box! Press `m!shake` to continue...');
   }
   if (msg.content === config.prefix  + '!' +'shake') {
-	var intStick = Math.floor(Math.random() * 203) + 1;
-    msg.channel.send('A stick comes out. It says no.' + intStick);
-    msg.channel.send('Your fortune reads:');
-          getOmikuji(msg,intStick);
+          getOmikuji(msg);
   }
   if (msg.content === config.prefix  + '!' +'yes') {
     msg.channel.send('It is my honor to serve you. Please try our services again.');
@@ -86,7 +82,7 @@ client.on('message', msg => {
     msg.channel.send('Welcome to the Natsumatsuri. \nThis is a kazaguruma, a pinwheel, just for you. \nThe games we have here are goldfish scooping and balloon yoyos.\nWe sell ramune (a soda pop with a marble inside), takoyaki and raindrop cake.\nPlease enjoy!');
   }
   if (msg.content === config.prefix  + '!' +'help') {
-    msg.channel.send('Q&A:\n`m!help-01`) Who is the Kami sama of this shrine? \n`m!help-02`) Why do we need to make a wish?\n`m!help`-03) What are the services? \n`m!help-04`) Where did the creator get her inspiration? \n`m!help-05`) What\'s the difference between a miko and a onmyoji?\n`m!help-06`) Who\'s the author of this bot?');
+    msg.channel.send('Q&A:\n`m!help-01`) Who is the Kami sama of this shrine? \n`m!help-02`) Why do we need to make a wish?\n`m!help-03`) What are the services? \n`m!help-04`) Where did the creator get her inspiration? \n`m!help-05`) What\'s the difference between a miko and a onmyoji?\n`m!help-06`) Who\'s the author of this bot?');
   }
   if (msg.content === config.prefix  + '!' +'help-01') {
     msg.channel.send('It\'s the shrine of Amaterasu-ōmikami, the goddess of the sun and the universe, mother of all.');
@@ -110,7 +106,10 @@ client.on('message', msg => {
     msg.channel.send('Please take your leave slowly. I wish you a safe journey!');
   }
 });
-async function getOmikuji(msg,intStick){
+async function getOmikuji(msg){
+    var intStick = Math.floor(Math.random() * 223) + 1;
+    await msg.channel.send('A stick comes out. It says no.' + intStick);
+    await msg.channel.send('Your fortune reads:');
     await sql.get(`SELECT * FROM omikuji WHERE no =${intStick}`).then(row => {
       msg.channel.send(`${row.message}`);
     });
